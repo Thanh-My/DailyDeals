@@ -1,0 +1,52 @@
+<?php
+$sku = $block->GetCurrentSku()->getSku();
+$endTime = $block->GetDataBySku($sku, 'end_time');
+$startTime = $block->GetDataBySku($sku, 'start_time');
+//var_dump($endTime . "-" . $startTime);
+//exit;
+?>
+<div id="flash-sale" style="text-align: center; float: left;line-height: 2.5;">
+    <span>(Day:Hours:Min:Seconds)</span>
+    <h1 id="time"></h1>
+    <!-- <h1><?php echo (new DateTime())->getTimestamp(); ?></h1> -->
+</div>
+<script>
+    var start = new Date('<?php echo $startTime ?>').getTime();
+    var end = new Date('<?php echo $endTime ?>').getTime();
+
+    function countdown() {
+        if(!isNaN(end)) {
+            var now = new Date().getTime();
+
+            comingTime = start - now;
+            saleTime = end - now;
+
+            var second = 1000;
+            var minute = second * 60;
+            var hour = minute * 60;
+            var day = hour * 24;
+            var saleDays = Math.floor(saleTime / (day));
+            var comingDays = Math.floor(comingTime / (day));
+
+            var saleHours = Math.floor((saleTime % (day)) / (hour));
+            var comingHours = Math.floor((comingTime % (day)) / (hour));
+
+            var saleMinutes = Math.floor((saleTime % (hour)) / (minute));
+            var comingMinutes = Math.floor((comingTime % (hour)) / (minute));
+
+            var saleSeconds = Math.floor((saleTime % (minute)) / second);
+            var comingSeconds = Math.floor((comingTime % (minute)) / second);
+
+            if (saleTime > 0 && comingTime <= 0) {
+                var time = saleDays + ":" + saleHours + ":" + saleMinutes + ":" + saleSeconds + " ";;
+                document.getElementById("time").innerHTML = time;
+            } else if (saleTime <= 0){
+                document.getElementById("time").innerHTML = "0d:0h:0m:0s";
+            }
+        }
+    }
+    setInterval(function () {
+        countdown();
+    }, 1000)
+
+</script>
